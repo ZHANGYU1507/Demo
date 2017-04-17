@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/AndroidProject.iml" filepath="$PROJECT_DIR$/AndroidProject.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CoordinateDemo/CoordinateDemo.iml" filepath="$PROJECT_DIR$/CoordinateDemo/CoordinateDemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/RxjavaRetrofitDemo-master/RxjavaRetrofitDemo-master.iml" filepath="$PROJECT_DIR$/RxjavaRetrofitDemo-master/RxjavaRetrofitDemo-master.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/demo_annotation/demo_annotation.iml" filepath="$PROJECT_DIR$/demo_annotation/demo_annotation.iml" />
+      <module fileurl="file://$PROJECT_DIR$/demo_eventbus/demo_eventbus.iml" filepath="$PROJECT_DIR$/demo_eventbus/demo_eventbus.iml" />
+      <module fileurl="file://$PROJECT_DIR$/demo_rxjava/demo_rxjava.iml" filepath="$PROJECT_DIR$/demo_rxjava/demo_rxjava.iml" />
+      <module fileurl="file://$PROJECT_DIR$/demo_rxjavaretrofit/demo_rxjavaretrofit.iml" filepath="$PROJECT_DIR$/demo_rxjavaretrofit/demo_rxjavaretrofit.iml" />
+    </modules>
+  </component>
+</project>
