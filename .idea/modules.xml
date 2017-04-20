@@ -10,6 +10,7 @@
       <module fileurl="file://$PROJECT_DIR$/demo_eventbus/demo_eventbus.iml" filepath="$PROJECT_DIR$/demo_eventbus/demo_eventbus.iml" />
       <module fileurl="file://$PROJECT_DIR$/demo_rxjava/demo_rxjava.iml" filepath="$PROJECT_DIR$/demo_rxjava/demo_rxjava.iml" />
       <module fileurl="file://$PROJECT_DIR$/demo_rxjavaretrofit/demo_rxjavaretrofit.iml" filepath="$PROJECT_DIR$/demo_rxjavaretrofit/demo_rxjavaretrofit.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tinkerdemo/tinkerdemo.iml" filepath="$PROJECT_DIR$/tinkerdemo/tinkerdemo.iml" />
     </modules>
   </component>
 </project>

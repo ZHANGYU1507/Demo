@@ -15,6 +15,7 @@
             <option value="$PROJECT_DIR$/demo_eventbus" />
             <option value="$PROJECT_DIR$/demo_rxjava" />
             <option value="$PROJECT_DIR$/demo_rxjavaretrofit" />
+            <option value="$PROJECT_DIR$/tinkerdemo" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

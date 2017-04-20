@@ -16,7 +16,6 @@ public class TempActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-
     }
 
     @Override
