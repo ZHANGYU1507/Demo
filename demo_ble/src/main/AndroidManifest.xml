@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.tinkerdemo">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.example.demo_ble">
+
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    // 声明你的应用程序只能在支持BLE的设备上运行 true是支持
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
 
     <application android:allowBackup="true" android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name" android:supportsRtl="true" android:theme="@style/AppTheme">

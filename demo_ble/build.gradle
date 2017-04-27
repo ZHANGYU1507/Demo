@@ -5,30 +5,18 @@ android {
     buildToolsVersion "25.0.2"
 
     defaultConfig {
-        applicationId "com.example.tinkerdemo"
+        applicationId "com.example.demo_ble"
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
-    signingConfigs {
-        release {
-            try {
-                storeFile file("release.jks")
-                storePassword "123456"
-                keyAlias "123456"
-                keyPassword "123456"
-            } catch (ex) {
-                throw new InvalidUserDataException(ex.toString())
-            }
-        }
-    }
     buildTypes {
         release {
-            minifyEnabled true
-            signingConfig signingConfigs.release
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -40,9 +28,5 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:25.3.1'
-    //可选，用于生成application类
-    provided('com.tencent.tinker:tinker-android-anno:1.7.7')
-    //tinker的核心库
-    compile('com.tencent.tinker:tinker-android-lib:1.7.7')
     testCompile 'junit:junit:4.12'
 }

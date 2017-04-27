@@ -1,4 +1,4 @@
-package com.example.tinkerdemo;
+package com.example.demo_ble;
 
 import org.junit.Test;
 

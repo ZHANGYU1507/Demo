@@ -7,6 +7,7 @@
       <module fileurl="file://$PROJECT_DIR$/RxjavaRetrofitDemo-master/RxjavaRetrofitDemo-master.iml" filepath="$PROJECT_DIR$/RxjavaRetrofitDemo-master/RxjavaRetrofitDemo-master.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/demo_annotation/demo_annotation.iml" filepath="$PROJECT_DIR$/demo_annotation/demo_annotation.iml" />
+      <module fileurl="file://$PROJECT_DIR$/demo_ble/demo_ble.iml" filepath="$PROJECT_DIR$/demo_ble/demo_ble.iml" />
       <module fileurl="file://$PROJECT_DIR$/demo_eventbus/demo_eventbus.iml" filepath="$PROJECT_DIR$/demo_eventbus/demo_eventbus.iml" />
       <module fileurl="file://$PROJECT_DIR$/demo_rxjava/demo_rxjava.iml" filepath="$PROJECT_DIR$/demo_rxjava/demo_rxjava.iml" />
       <module fileurl="file://$PROJECT_DIR$/demo_rxjavaretrofit/demo_rxjavaretrofit.iml" filepath="$PROJECT_DIR$/demo_rxjavaretrofit/demo_rxjavaretrofit.iml" />
