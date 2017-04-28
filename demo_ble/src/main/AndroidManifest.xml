@@ -3,6 +3,8 @@
 
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     // 声明你的应用程序只能在支持BLE的设备上运行 true是支持
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
 
@@ -15,6 +17,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service android:name=".service.BleService"/>
     </application>
 
 </manifest>

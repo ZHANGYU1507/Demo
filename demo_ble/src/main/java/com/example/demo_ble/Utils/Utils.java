@@ -1,5 +1,6 @@
 package com.example.demo_ble.Utils;
 
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
@@ -28,7 +29,7 @@ public class Utils {
      * @param context
      * @return
      */
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+    @SuppressLint("NewApi")
     public static BluetoothAdapter getBLEAdapter(Context context){
         // 如果不支持，则直接返回null
         if(!isBLE(context)){
