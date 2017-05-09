@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_blthoperation"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.demo_ble.BleOperation">
+    <Button
+        android:onClick="infoClick"
+        android:layout_width="match_parent"
+        android:text="获取设备信息"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/tv_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Button
+        android:onClick="lampClick"
+        android:layout_width="match_parent"
+        android:text="开灯"
+        android:layout_height="wrap_content" />
+</LinearLayout>

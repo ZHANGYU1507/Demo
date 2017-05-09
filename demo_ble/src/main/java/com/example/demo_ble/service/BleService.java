@@ -7,6 +7,8 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattDescriptor;
+import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.content.Intent;
 import android.os.*;
@@ -17,15 +19,20 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.demo_ble.Utils.Utils;
+import com.example.demo_ble.bean.BleInfo;
 import com.example.demo_ble.contract.BleStateInterface;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by zy on 2017/4/28.
  */
 
 public class BleService extends Service{
+    private final String TAG = BleService.class.getSimpleName();
     private BluetoothAdapter mBluetoothAdapter;
     // 10秒后停止查找搜索.
     private static final long SCAN_PERIOD = 10000;
@@ -35,6 +42,9 @@ public class BleService extends Service{
 
     private String mBleAdrress = null;// 保存连接的地址
     private BluetoothGatt mBluetoothGatt;
+    private BluetoothGattService mBluetoothGattService;
+
+    private BleInfo mBleInfo = new BleInfo();
 
     private int mConnectionState = BleStateInterface.STATE_DISCONNECTED;// 默认断开的状态
 
@@ -44,10 +54,11 @@ public class BleService extends Service{
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             super.onConnectionStateChange(gatt, status, newState);
+            Log.i("mBluetoothDevice", "newState:"+newState);
             if(newState == BluetoothProfile.STATE_CONNECTED){// 连接成功
                 mConnectionState = BleStateInterface.STATE_CONNECTED;
                 EventBus.getDefault().post(mConnectionState);
-            }else if(newState == BluetoothProfile.STATE_DISCONNECTED){// 连接成功
+            }else if(newState == BluetoothProfile.STATE_DISCONNECTED){// 连接失败
                 mConnectionState = BleStateInterface.STATE_DISCONNECTED;
                 EventBus.getDefault().post(mConnectionState);
             }
@@ -57,18 +68,37 @@ public class BleService extends Service{
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             super.onServicesDiscovered(gatt, status);
+            if(status == BluetoothGatt.GATT_SUCCESS){// 找到服务
+                List<BluetoothGattService> services = getSupportedGattServices();
+                // 根据uuid，获取自己需要的服务
+                mBluetoothGattService = mBluetoothGatt.getService(UUID.fromString(Utils.ServiceUUID));
+                BluetoothGattCharacteristic read = mBluetoothGattService.getCharacteristic(UUID.fromString(Utils.ReadUUID));
+                // 是否开启设备通知
+                setCharacteristicNotification(read , true);
+                EventBus.getDefault().post(BleStateInterface.STATE_SEARCH);
+
+            }else{
+                EventBus.getDefault().post(BleStateInterface.STATE_DISSEARCH);
+            }
         }
 
         // 当读取设备时回调该函数
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             super.onCharacteristicRead(gatt, characteristic, status);
+            Log.i(TAG, "onCharacteristicRead status:"+status+":characteristic:"+characteristic.toString());
+            // 获取到版本号
+            String version = characteristic.getStringValue(0);
+            mBleInfo.setVersion(version);
+            mBleInfo.setType(BleStateInterface.INFO_STATE);
+            EventBus.getDefault().post(mBleInfo);
         }
 
         // 当向设备写数据时，回调该函数
         @Override
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             super.onCharacteristicWrite(gatt, characteristic, status);
+            Log.i(TAG, "onCharacteristicWrite status:"+status);
         }
 
         // 设备发出通知时，回调该函数
@@ -82,7 +112,37 @@ public class BleService extends Service{
         public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
         }
 
+
     };
+
+    // 开启设备通知
+    @SuppressLint("NewApi")
+    private void setCharacteristicNotification(BluetoothGattCharacteristic read, boolean enabled) {
+        if(mBluetoothGatt == null || mBluetoothAdapter == null){
+            Log.i(TAG, "没有初始化");
+            return;
+        }
+        mBluetoothGatt.setCharacteristicNotification(read, enabled);
+        // 通知的uuid对象
+        BluetoothGattDescriptor descriptor =  read.getDescriptor(UUID.fromString(Utils.NotifyUUID));
+        if(descriptor != null){
+            if (enabled) {
+                descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+            } else {
+                descriptor.setValue(BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE);
+            }
+            mBluetoothGatt.writeDescriptor(descriptor);
+        }
+
+    }
+
+    // 获取服务列表
+    @SuppressLint("NewApi")
+    public List<BluetoothGattService> getSupportedGattServices() {
+        if (mBluetoothGatt == null)
+            return null;
+        return mBluetoothGatt.getServices();   //此处返回获取到的服务列表
+    }
     @Override
     public void onCreate() {
         super.onCreate();
@@ -122,7 +182,31 @@ public class BleService extends Service{
                mBluetoothGatt.discoverServices();
            }
         }
+        //开关灯
+        @Override
+        public void openCloseLamp(String instructions) {
+
+
+        }
+
+
+        // 获取蓝牙信息
+        @Override
+        public void bleInfo() {
+            getBleInfo();
+        }
     }
+
+    // 获取蓝牙的设备信息
+    @SuppressLint("NewApi")
+    public void getBleInfo(){
+        // 根据设备信息通道的uuid，获取通道的服务
+        BluetoothGattService infoService = mBluetoothGatt.getService(UUID.fromString(Utils.BluetoothDeviceInfo));
+        // 根据固件版本的UUID，获取BluetoothGattCharacteristic对象
+        BluetoothGattCharacteristic firmwareVersion = infoService.getCharacteristic(UUID.fromString(Utils.BluetoothFirmwareVersion));
+        boolean flag =  mBluetoothGatt.readCharacteristic(firmwareVersion);
+    }
+
 
     /**
      * 连接蓝牙
@@ -154,6 +238,21 @@ public class BleService extends Service{
     }
 
 
+    /**
+     * 向设备中写数据
+     * @param data
+     */
+    @SuppressLint("NewApi")
+    private void writeDataToBle(String data){
+
+        BluetoothGattCharacteristic writerChara = mBluetoothGattService.getCharacteristic(UUID.fromString(Utils.WriteUUID));
+        mBluetoothGatt.setCharacteristicNotification(writerChara, true);// 设置通知监听
+        boolean flag = mBluetoothGatt.writeCharacteristic(writerChara);
+        // 当数据传递到蓝牙之后
+        // 会回调BluetoothGattCallback里面的write方法
+        writerChara.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
+
+    }
     /**
      * 是否扫描
      * @param isScan

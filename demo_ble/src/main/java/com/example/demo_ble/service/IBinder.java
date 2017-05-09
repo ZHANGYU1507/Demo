@@ -13,4 +13,8 @@ public interface IBinder {
 
     //  检索设备的服务
     public void searchServices();
+    // 蓝牙开灯/关灯
+    public void openCloseLamp(String instructions);
+    // 蓝牙信息
+    public void bleInfo();
 }

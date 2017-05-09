@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private List<BluetoothDevice> list;
     private BleAdapter adapter;
+    private boolean isService = false;// 用于标识是否搜索到设备服务
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //首先获取bluetoothadapter
         mBluetoothAdapter = Utils.getBLEAdapter(this);
         if(mBluetoothAdapter == null){// 说明设备不支持蓝牙，或者不支持BLE
-            Toast.makeText(this, "此设备不支持蓝牙，或者不支持BLE", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "此设备不支持蓝牙，或者不支持BLE", Toast.LENGTH_SHORT).show();
         }else{
             if (!mBluetoothAdapter.isEnabled()){// 如果蓝牙没有开启，就开启蓝牙
                 //也可以直接调用mBluetoothAdapter.enable() mBluetoothAdapter.disable()来启用禁用、关闭蓝牙。不过这种方式不会弹出询问对话框
@@ -102,13 +103,38 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     // 这里为了获取蓝牙的连接状态
     @Subscribe(threadMode = ThreadMode.MAIN, priority = 100)
     public void onConnState(Integer state){
+        Intent intent = null;
         switch (state){
             case BleStateInterface.STATE_CONNECTED:// 连接成功
-                Toast.makeText(this, "蓝牙连接成功..", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "蓝牙连接成功..", Toast.LENGTH_SHORT).show();
+                mIBinder.searchServices();
                 break;
             case BleStateInterface.STATE_DISCONNECTED:// 连接失败
-                Toast.makeText(this, "蓝牙连接失败..", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "蓝牙连接失败..", Toast.LENGTH_SHORT).show();
                 break;
+            case BleStateInterface.STATE_DISSEARCH:// 没有检索到设备服务
+                intent = new Intent(MainActivity.this, BleOperation.class);
+                intent.putExtra("isService", false);
+                startActivity(intent);
+                isService = false;
+                break;
+            case BleStateInterface.STATE_SEARCH:// 检索到设备服务
+                intent = new Intent(MainActivity.this, BleOperation.class);
+                intent.putExtra("isService", true);
+                startActivity(intent);
+                isService = true;
+                break;
+            case BleStateInterface.LAMP_OPEN_STATE:// 蓝牙开灯
+                mIBinder.openCloseLamp("a10801");
+                break;
+            case BleStateInterface.LAMP_CLOSE_STATE:// 蓝牙开灯
+                mIBinder.openCloseLamp("a10802");
+                break;
+            case BleStateInterface.INFO_STATE:// 获取蓝牙信息
+                Toast.makeText(MainActivity.this, "获取蓝牙信息。。", Toast.LENGTH_SHORT).show();
+                mIBinder.bleInfo();
+                break;
+
         }
     }
 
@@ -119,8 +145,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }else{
             adapter.notifyDataSetChanged();
         }
-
-
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -132,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     startBleService();
                     break;
                 case Activity.RESULT_CANCELED:// 蓝牙开启失败
-                    Toast.makeText(this, "蓝牙开启失败。。", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "蓝牙开启失败。。", Toast.LENGTH_SHORT).show();
                     break;
             }
         }
@@ -141,13 +165,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     // listview的点击事件，连接蓝牙
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
         String address = list.get(position).getAddress();
         if(mIBinder != null){
             boolean flag = mIBinder.connBle(address);
             if(!flag){// 返回false一定是蓝牙连接失败，返回true也不一定成功。。因为最终是否连接成功看连接的返回状态，异步的，这里只是减少一些可能性
-                Toast.makeText(this, "蓝牙连接失败..", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "蓝牙连接失败..", Toast.LENGTH_SHORT).show();
             }
+        }else{
+            Toast.makeText(MainActivity.this, "蓝牙连接失败..", Toast.LENGTH_SHORT).show();
         }
     }
 }
